@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fetch Firebase Data in Table</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+  table {
+    width: 80%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+  }
+  th {
+    background-color: #f4f4f4;
+  }
+</style>
+</head>
+<body>
+
+<h1>Firebase Data Display in Table</h1>
+
+<table id="data-table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Vehicle</th>
+      <th>username</th>
+      <th>PrecinctNo</th>
+      
+     
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td colspan="3">Loading data...</td></tr>
+  </tbody>
+</table>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+  // Your Firebase configuration (replace with your actual config)
+  const firebaseConfig = {
+  apiKey: "AIzaSyCw-V8mJajmTQwkKRehCuY_W23oNYPxiLU",
+  authDomain: "borb-62a41.firebaseapp.com",
+  databaseURL: "https://borb-62a41-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "borb-62a41",
+  storageBucket: "borb-62a41.firebasestorage.app",
+  messagingSenderId: "480450633220",
+  appId: "1:480450633220:web:3b185fa454b1c023515f51"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  const database = firebase.database();
+
+  // Reference to your data node (change 'items' to your node name)
+  const dataRef = database.ref('student');
+
+  // Fetch data and populate table
+  dataRef.once('value')
+    .then((snapshot) => {
+      const data = snapshot.val();
+      const tbody = document.querySelector('#data-table tbody');
+
+      // Clear existing rows
+      tbody.innerHTML = '';
+
+      if (data) {
+        Object.keys(data).forEach((key) => {
+          const item = data[key];
+          const row = document.createElement('tr');
+
+          // Create cells
+          const idCell = document.createElement('td');
+          idCell.textContent = key;
+
+          const nameCell = document.createElement('td');
+          nameCell.textContent = item.name;
+
+          const vehicleCell = document.createElement('td');
+          vehicleCell.textContent = item.vehicle;
+
+          const usernameCell = document.createElement('td');
+          usernameCell.textContent = item.username;
+
+          const PrecinctNoCell = document.createElement('td');
+          PrecinctNoCell.textContent = item.precinctno;
+
+       
+
+          // Append cells to row
+          row.appendChild(idCell);
+          row.appendChild(nameCell);
+          row.appendChild(vehicleCell);
+          row.appendChild(usernameCell);
+          row.appendChild(PrecinctNoCell);
+
+          // Append row to tbody
+          tbody.appendChild(row);
+        });
+      } else {
+        // If no data
+        tbody.innerHTML = '<tr><td colspan="3">No data available.</td></tr>';
+      }
+    })
+    .catch((error) => {
+      const tbody = document.querySelector('#data-table tbody');
+      tbody.innerHTML = `<tr><td colspan="3">Error: ${error}</td></tr>`;
+    });
+</script>
+
+</body>
+</html>
